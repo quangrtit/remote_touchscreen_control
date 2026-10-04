@@ -1,0 +1,9 @@
+{
+  "name": "Remote Touch",
+  "short_name": "Remote Touch",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#02060a",
+  "theme_color": "#07111d"
+}

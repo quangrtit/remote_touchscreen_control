@@ -1,0 +1,221 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  background: #02060a;
+  color: #eef7ff;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: #02060a;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+}
+
+.remote-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #02060a;
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.screen-frame {
+  position: absolute;
+  top: calc(50% + var(--zoom-pan-y, 0px));
+  left: calc(50% + var(--zoom-pan-x, 0px));
+  display: block;
+  max-width: none;
+  max-height: none;
+  background: #050b11;
+  transform: translate(-50%, -50%) scale(var(--zoom-scale, 1));
+  transform-origin: center;
+  will-change: transform;
+  image-rendering: auto;
+}
+
+.screen-output {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: fill;
+  background: #050b11;
+}
+
+.screen-output[hidden] {
+  display: none;
+}
+
+.stream-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 50% 42%, rgb(23 116 164 / 25%), transparent 32rem),
+    #07111d;
+  color: #86a1b3;
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.stream-placeholder[hidden] {
+  display: none;
+}
+
+.stream-placeholder strong {
+  color: #d7efff;
+  font-size: clamp(1rem, 4vw, 1.35rem);
+}
+
+.stream-placeholder span:last-child {
+  font-size: 0.8rem;
+}
+
+.loader {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 8px;
+  border: 3px solid rgb(116 213 255 / 18%);
+  border-top-color: #74d5ff;
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.hud {
+  position: fixed;
+  z-index: 10;
+  top: max(10px, env(safe-area-inset-top));
+  right: max(10px, env(safe-area-inset-right));
+  left: max(10px, env(safe-area-inset-left));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.hud__actions {
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.status,
+.icon-button {
+  border: 1px solid rgb(255 255 255 / 15%);
+  border-radius: 999px;
+  background: rgb(5 13 22 / 76%);
+  box-shadow: 0 5px 22px rgb(0 0 0 / 28%);
+  color: #c0d0dc;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 11px;
+}
+
+.status__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f4b83f;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.status[data-state="connected"] {
+  color: #c7f9dc;
+}
+
+.status[data-state="connected"] .status__dot {
+  background: #42d986;
+}
+
+.status[data-state="disconnected"],
+.status[data-state="error"] {
+  color: #ffc2c2;
+}
+
+.status[data-state="disconnected"] .status__dot,
+.status[data-state="error"] .status__dot {
+  background: #ff6666;
+}
+
+.icon-button {
+  min-height: 34px;
+  padding: 7px 11px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.icon-button:active {
+  background: rgb(42 116 153 / 82%);
+  transform: scale(0.97);
+}
+
+.icon-button[aria-pressed="true"] {
+  border-color: rgb(116 213 255 / 75%);
+  background: rgb(25 104 143 / 88%);
+  color: #effaff;
+}
+
+.touch-markers {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.touch-marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 2px solid #74d5ff;
+  border-radius: 50%;
+  background: rgb(77 192 241 / 18%);
+  box-shadow: 0 0 22px rgb(52 188 246 / 70%);
+  will-change: transform;
+}
+
+@media (max-width: 520px) {
+  .icon-button {
+    padding-inline: 9px;
+    font-size: 0.66rem;
+  }
+}

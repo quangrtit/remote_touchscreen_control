@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#07111d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Remote Touch</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+  <main id="touchSurface" class="remote-viewport" aria-label="Màn hình Windows từ xa">
+    <div id="screenFrame" class="screen-frame">
+      <canvas id="screenCanvas" class="screen-output" aria-label="Video màn hình Windows"></canvas>
+      <video id="screenVideo" class="screen-output" autoplay muted playsinline
+             disableremoteplayback x-webkit-airplay="deny" hidden></video>
+    </div>
+    <div id="streamPlaceholder" class="stream-placeholder">
+      <span class="loader" aria-hidden="true"></span>
+      <strong id="streamPlaceholderTitle">Đang nhận màn hình Windows</strong>
+      <span id="streamPlaceholderHint">Xoay ngang thiết bị để có vùng điều khiển lớn nhất</span>
+    </div>
+    <div id="touchMarkers" class="touch-markers" aria-hidden="true"></div>
+  </main>
+
+  <header class="hud">
+    <div id="connectionStatus" class="status" data-state="connecting" role="status">
+      <span class="status__dot" aria-hidden="true"></span>
+      <span id="connectionLabel">Đang kết nối</span>
+    </div>
+    <div class="hud__actions">
+      <button id="fitButton" class="icon-button" type="button" title="Đổi chế độ hiển thị">
+        Vừa màn hình
+      </button>
+      <button id="zoomButton" class="icon-button" type="button"
+              aria-pressed="false" title="Bật chế độ kéo và chụm để thu phóng">
+        Thu phóng
+      </button>
+    </div>
+  </header>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
