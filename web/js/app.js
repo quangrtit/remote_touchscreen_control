@@ -4,7 +4,7 @@ import { WebSocketTransport } from "./network/websocket-transport.js";
 import { ScreenStream } from "./video/screen-stream.js";
 import { clientLog, describeError } from "./diagnostics.js";
 
-const CLIENT_VERSION = "2026.10.04-low-latency.4";
+const CLIENT_VERSION = "2026.10.04-compact-hud.2";
 
 const status = document.querySelector("#connectionStatus");
 const statusLabel = document.querySelector("#connectionLabel");
@@ -16,14 +16,15 @@ const placeholder = document.querySelector("#streamPlaceholder");
 const placeholderTitle = document.querySelector("#streamPlaceholderTitle");
 const placeholderHint = document.querySelector("#streamPlaceholderHint");
 const markers = document.querySelector("#touchMarkers");
-const fitButton = document.querySelector("#fitButton");
 const zoomButton = document.querySelector("#zoomButton");
+const zoomLabel = document.querySelector("#zoomLabel");
 
 const connection = { input: "connecting", video: "connecting" };
 let controller;
 let zoomController;
 let zoomMode = false;
 let lastErrorMessage = "";
+let statusCollapseTimer = 0;
 
 clientLog("client-start", {
   version: CLIENT_VERSION,
@@ -69,7 +70,22 @@ function updateStatus(message) {
     placeholderTitle.textContent = "Đang nhận màn hình Windows";
     placeholderHint.textContent = "Xoay ngang thiết bị để có vùng điều khiển lớn nhất";
   }
+
+  status.setAttribute("aria-label", `Trạng thái kết nối: ${statusLabel.textContent}`);
+  status.title = statusLabel.textContent;
 }
+
+function setStatusExpanded(expanded) {
+  clearTimeout(statusCollapseTimer);
+  status.setAttribute("aria-expanded", String(expanded));
+  if (expanded) {
+    statusCollapseTimer = setTimeout(() => setStatusExpanded(false), 2600);
+  }
+}
+
+status.addEventListener("click", () => {
+  setStatusExpanded(status.getAttribute("aria-expanded") !== "true");
+});
 
 const inputTransport = new WebSocketTransport((state) => {
   connection.input = state;
@@ -99,14 +115,6 @@ zoomController = new ViewportZoomController(
 inputTransport.connect();
 screenStream.connect();
 
-let fitMode = "contain";
-fitButton.addEventListener("click", () => {
-  fitMode = fitMode === "contain" ? "cover" : "contain";
-  screenStream.setFitMode(fitMode);
-  zoomController.reset();
-  fitButton.textContent = fitMode === "contain" ? "Vừa màn hình" : "Lấp đầy";
-});
-
 zoomButton.addEventListener("click", () => {
   zoomMode = !zoomMode;
   if (zoomMode) {
@@ -122,13 +130,17 @@ zoomButton.addEventListener("click", () => {
 
 function updateZoomButton(scale) {
   const percent = Math.round(scale * 100);
-  zoomButton.textContent = zoomMode
+  zoomLabel.textContent = zoomMode
     ? `Xong · ${percent}%`
     : scale > 1.005 ? `Thu phóng · ${percent}%` : "Thu phóng";
+  const action = zoomMode ? `Tắt chế độ thu phóng, mức ${percent}%` : "Bật chế độ thu phóng";
+  zoomButton.setAttribute("aria-label", action);
+  zoomButton.title = action;
 }
 
 surface.addEventListener("contextmenu", (event) => event.preventDefault());
 window.addEventListener("pagehide", () => {
+  clearTimeout(statusCollapseTimer);
   controller.dispose();
   zoomController.dispose();
   inputTransport.dispose();

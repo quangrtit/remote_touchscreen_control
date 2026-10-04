@@ -26,17 +26,17 @@
   </main>
 
   <header class="hud">
-    <div id="connectionStatus" class="status" data-state="connecting" role="status">
+    <button id="connectionStatus" class="status" type="button" data-state="connecting"
+            aria-expanded="false" aria-label="Trạng thái kết nối: Đang kết nối"
+            title="Xem trạng thái kết nối">
       <span class="status__dot" aria-hidden="true"></span>
-      <span id="connectionLabel">Đang kết nối</span>
-    </div>
+      <span id="connectionLabel" class="status__label" aria-live="polite">Đang kết nối</span>
+    </button>
     <div class="hud__actions">
-      <button id="fitButton" class="icon-button" type="button" title="Đổi chế độ hiển thị">
-        Vừa màn hình
-      </button>
-      <button id="zoomButton" class="icon-button" type="button"
-              aria-pressed="false" title="Bật chế độ kéo và chụm để thu phóng">
-        Thu phóng
+      <button id="zoomButton" class="zoom-button" type="button" aria-pressed="false"
+              aria-label="Bật chế độ thu phóng" title="Bật chế độ thu phóng">
+        <span class="zoom-button__dot" aria-hidden="true"></span>
+        <span id="zoomLabel" class="zoom-button__label">Thu phóng</span>
       </button>
     </div>
   </header>

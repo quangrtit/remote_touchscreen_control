@@ -28,7 +28,6 @@ export class ScreenStream {
   #failedConnections = 0;
   #firstFrameTimer = 0;
   #disposed = false;
-  #fitMode = "contain";
   #sourceWidth = 16;
   #sourceHeight = 9;
   #onStateChange;
@@ -150,11 +149,6 @@ export class ScreenStream {
       clientLog("screen-ws-error", { packets: this.#packetCount });
       socket.close();
     });
-  }
-
-  setFitMode(mode) {
-    this.#fitMode = mode === "cover" ? "cover" : "contain";
-    this.#layoutFrame();
   }
 
   dispose() {
@@ -526,13 +520,15 @@ export class ScreenStream {
   #layoutFrame() {
     const viewportWidth = this.#viewport.clientWidth;
     const viewportHeight = this.#viewport.clientHeight;
-    if (!viewportWidth || !viewportHeight || !this.#sourceWidth || !this.#sourceHeight) return;
-    const sourceAspect = this.#sourceWidth / this.#sourceHeight;
-    const viewportAspect = viewportWidth / viewportHeight;
-    const fillByWidth = this.#fitMode === "cover"
-      ? viewportAspect < sourceAspect : viewportAspect > sourceAspect;
-    this.#frameElement.style.width = `${fillByWidth ? viewportWidth : viewportHeight * sourceAspect}px`;
-    this.#frameElement.style.height = `${fillByWidth ? viewportWidth / sourceAspect : viewportHeight}px`;
+    const size = calculateContainSize(
+      this.#sourceWidth,
+      this.#sourceHeight,
+      viewportWidth,
+      viewportHeight,
+    );
+    if (!size) return;
+    this.#frameElement.style.width = `${size.width}px`;
+    this.#frameElement.style.height = `${size.height}px`;
   }
 
   #resetWebCodecs() {
@@ -600,6 +596,19 @@ export class ScreenStream {
   #emitState(state, message) {
     this.#onStateChange?.(state, message);
   }
+}
+
+export function calculateContainSize(sourceWidth, sourceHeight, viewportWidth, viewportHeight) {
+  if (sourceWidth <= 0 || sourceHeight <= 0 || viewportWidth <= 0 || viewportHeight <= 0) {
+    return null;
+  }
+  const sourceAspect = sourceWidth / sourceHeight;
+  const viewportAspect = viewportWidth / viewportHeight;
+  const constrainByWidth = viewportAspect <= sourceAspect;
+  return {
+    width: constrainByWidth ? viewportWidth : viewportHeight * sourceAspect,
+    height: constrainByWidth ? viewportWidth / sourceAspect : viewportHeight,
+  };
 }
 
 function concatenate(segments) {

@@ -123,37 +123,71 @@ body {
 
 .hud__actions {
   display: flex;
-  gap: 8px;
   pointer-events: auto;
 }
 
 .status,
-.icon-button {
+.zoom-button {
+  min-width: 36px;
+  height: 36px;
   border: 1px solid rgb(255 255 255 / 15%);
   border-radius: 999px;
   background: rgb(5 13 22 / 76%);
   box-shadow: 0 5px 22px rgb(0 0 0 / 28%);
   color: #c0d0dc;
+  cursor: pointer;
   font: inherit;
   font-size: 0.72rem;
   font-weight: 700;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .status {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
-  padding: 8px 11px;
+  max-width: min(76vw, 420px);
+  padding: 0 11px;
+  overflow: hidden;
+  pointer-events: auto;
+  transition: background 140ms ease, box-shadow 140ms ease, transform 100ms ease;
+}
+
+.status[aria-expanded="false"] {
+  width: 36px;
+  padding: 0;
+  gap: 0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.status__label {
+  max-width: min(68vw, 370px);
+  overflow: hidden;
+  opacity: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: max-width 160ms ease, opacity 120ms ease;
+}
+
+.status[aria-expanded="false"] .status__label {
+  max-width: 0;
+  opacity: 0;
 }
 
 .status__dot {
-  width: 7px;
-  height: 7px;
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: #f4b83f;
-  box-shadow: 0 0 10px currentColor;
+  background: #ff626d;
+  box-shadow: 0 0 11px rgb(255 98 109 / 85%);
 }
 
 .status[data-state="connected"] {
@@ -162,6 +196,7 @@ body {
 
 .status[data-state="connected"] .status__dot {
   background: #42d986;
+  box-shadow: 0 0 11px rgb(66 217 134 / 85%);
 }
 
 .status[data-state="disconnected"],
@@ -172,24 +207,74 @@ body {
 .status[data-state="disconnected"] .status__dot,
 .status[data-state="error"] .status__dot {
   background: #ff6666;
+  box-shadow: 0 0 11px rgb(255 102 102 / 85%);
 }
 
-.icon-button {
-  min-height: 34px;
-  padding: 7px 11px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+.zoom-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 36px;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  overflow: hidden;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: background 140ms ease, box-shadow 140ms ease, transform 100ms ease;
 }
 
-.icon-button:active {
+.zoom-button__dot {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #74d5ff;
+  box-shadow: 0 0 11px rgb(116 213 255 / 85%);
+}
+
+.zoom-button__label {
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  white-space: nowrap;
+  transition: max-width 160ms ease, opacity 120ms ease;
+}
+
+.status:active,
+.zoom-button:active {
   background: rgb(42 116 153 / 82%);
   transform: scale(0.97);
 }
 
-.icon-button[aria-pressed="true"] {
+.status:focus-visible,
+.zoom-button:focus-visible {
+  outline: 2px solid #effaff;
+  outline-offset: 2px;
+}
+
+.zoom-button[aria-pressed="true"] {
+  width: auto;
+  padding: 0 11px;
+  gap: 7px;
   border-color: rgb(116 213 255 / 75%);
   background: rgb(25 104 143 / 88%);
+  box-shadow: 0 5px 22px rgb(0 0 0 / 28%);
   color: #effaff;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.zoom-button[aria-pressed="true"] .zoom-button__dot {
+  background: #effaff;
+  box-shadow: 0 0 11px rgb(239 250 255 / 85%);
+}
+
+.zoom-button[aria-pressed="true"] .zoom-button__label {
+  max-width: 130px;
+  opacity: 1;
 }
 
 .touch-markers {
@@ -211,11 +296,4 @@ body {
   background: rgb(77 192 241 / 18%);
   box-shadow: 0 0 22px rgb(52 188 246 / 70%);
   will-change: transform;
-}
-
-@media (max-width: 520px) {
-  .icon-button {
-    padding-inline: 9px;
-    font-size: 0.66rem;
-  }
 }

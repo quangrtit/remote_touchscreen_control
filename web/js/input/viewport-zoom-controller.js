@@ -1,4 +1,4 @@
-const MIN_SCALE = 1;
+const MIN_SCALE = 0.5;
 const MAX_SCALE = 4;
 const TAP_MAX_DURATION_MS = 350;
 const TAP_MAX_MOVEMENT_PX = 8;

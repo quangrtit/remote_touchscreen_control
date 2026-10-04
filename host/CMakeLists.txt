@@ -44,12 +44,34 @@ endif()
 add_executable(RemoteTouchHost src/main.cpp)
 target_link_libraries(RemoteTouchHost PRIVATE remote_touch_core)
 
+file(GLOB_RECURSE REMOTE_TOUCH_WEB_ASSETS CONFIGURE_DEPENDS
+    LIST_DIRECTORIES false
+    "${PROJECT_SOURCE_DIR}/web/*"
+)
+set(REMOTE_TOUCH_WEB_STAMP
+    "${CMAKE_CURRENT_BINARY_DIR}/remote_touch_web_assets-$<CONFIG>.stamp"
+)
+
 add_custom_command(TARGET RemoteTouchHost POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${PROJECT_SOURCE_DIR}/web"
             "$<TARGET_FILE_DIR:RemoteTouchHost>/web"
     COMMENT "Copying web client next to RemoteTouchHost"
+    VERBATIM
 )
+
+add_custom_command(
+    OUTPUT "${REMOTE_TOUCH_WEB_STAMP}"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${PROJECT_SOURCE_DIR}/web"
+            "$<TARGET_FILE_DIR:RemoteTouchHost>/web"
+    COMMAND ${CMAKE_COMMAND} -E touch "${REMOTE_TOUCH_WEB_STAMP}"
+    DEPENDS ${REMOTE_TOUCH_WEB_ASSETS}
+    COMMENT "Synchronizing updated web client assets"
+    VERBATIM
+)
+add_custom_target(remote_touch_web ALL DEPENDS "${REMOTE_TOUCH_WEB_STAMP}")
+add_dependencies(remote_touch_web RemoteTouchHost)
 
 if(BUILD_TESTING)
     add_executable(touch_packet_tests tests/touch_packet_tests.cpp)

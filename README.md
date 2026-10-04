@@ -16,8 +16,8 @@ chuyển Pointer Events thành Windows Touch Injection, phù hợp để điều
 - Multi-touch nguyên tử tối đa 10 contact: có thể giữ joystick và bấm kỹ năng đồng
   thời bằng hai tay.
 - Touch heartbeat 20 Hz giữ contact lâu không bị Windows tự hủy.
-- Thu phóng cục bộ 1×–4×, pan bằng một ngón và pinch bằng hai ngón.
-- Hai chế độ hiển thị: `Vừa màn hình` và `Lấp đầy`.
+- Thu phóng cục bộ 0,5×–4×, pan bằng một ngón và pinch bằng hai ngón.
+- HUD tối giản bằng các chấm trạng thái để không che vùng cảm ứng.
 - Tự reconnect input/video và gửi keyframe mới ngay khi client kết nối lại.
 - Session token, giới hạn client IPv4 private/LAN và chặn PC local chiếm phiên của
   điện thoại.
@@ -152,9 +152,11 @@ RemoteTouchHost [--port 8080]
 
 1. Mở URL có token do host in ra.
 2. Xoay ngang thiết bị để có vùng điều khiển lớn nhất.
-3. Chọn `Vừa màn hình` để thấy toàn bộ desktop.
-4. Chọn `Lấp đầy` để phủ kín viewport; một phần hình ảnh có thể bị cắt.
-5. Với iPhone/iPad, có thể dùng `Share → Add to Home Screen` để giảm giao diện
+3. Hình ảnh luôn tự co vừa màn hình để toàn bộ desktop và tọa độ cảm ứng khớp nhau.
+4. Chạm chấm trạng thái góc trái để xem chi tiết kết nối; xanh là đã kết nối, đỏ là
+   đang kết nối lại hoặc có lỗi.
+5. Chạm chấm góc phải để bật thu phóng.
+6. Với iPhone/iPad, có thể dùng `Share → Add to Home Screen` để giảm giao diện
    trình duyệt.
 
 ### Multi-touch khi chơi game
@@ -174,11 +176,11 @@ tránh giới hạn input giữa các integrity level.
 
 ### Thu phóng chi tiết nhỏ
 
-1. Nhấn `Thu phóng`.
-2. Pinch hai ngón để zoom từ 1× đến 4×.
+1. Chạm chấm thu phóng ở góc phải; nút sẽ mở thành `Xong · 100%`.
+2. Pinch hai ngón để zoom từ 50% đến 400%; mức 100% luôn hiển thị trọn desktop.
 3. Kéo một ngón để di chuyển vùng đang xem.
 4. Chạm nhanh để gửi một touch tới đúng tọa độ Windows đang hiển thị.
-5. Pinch về 100% hoặc chọn lại chế độ hiển thị để reset.
+5. Pinch về 100% để trở lại kích thước ban đầu.
 6. Nhấn `Xong` để trả toàn bộ pointer về chế độ multi-touch chơi game.
 
 Chế độ zoom được tách riêng để thao tác giữ joystick + bấm kỹ năng không bị hiểu
@@ -243,7 +245,7 @@ http://<IP-PC>:8080/?token=<TOKEN>&decoder=mse
 ### BlueStacks chỉ nhận một ngón
 
 - Kiểm tra log có đạt `active=2` hay không.
-- Chắc chắn nút `Thu phóng` đang ở trạng thái tắt/`Xong`.
+- Chắc chắn chế độ thu phóng đang tắt; nếu đang bật, nhấn `Xong`.
 - Kiểm tra cấu hình game controls của BlueStacks.
 - Chạy BlueStacks và host cùng mức quyền.
 
